@@ -35,7 +35,7 @@ import { SharedModule } from './_modules/shared.module';
   exports:[
     BrowserAnimationsModule,
     FormsModule,
-  ]
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })
