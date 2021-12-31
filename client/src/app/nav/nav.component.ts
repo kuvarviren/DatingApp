@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { AccountService } from '../_services/account.service';
-import { User } from '../_users/user';
+import { User } from '../_models/user';
 
 @Component({
   selector: 'app-nav',
