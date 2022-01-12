@@ -23,3 +23,70 @@ Global
 		SolutionGuid = {814CBD06-60DB-486E-B03C-8DDBBDE9F6BD}
 	EndGlobalSection
 EndGlobal
+
+
+TimeAgo 
+How long ago someone was last active?
+1. install ngx-timeago package: npm install ngx-timeago
+2. Import timeago module in shared module
+import { TimeagoModule } from 'ngx-timeago';
+@NgModule({
+  declarations: [],
+  imports: [
+    TimeagoModule.forRoot()
+  ],
+  exports:[
+    TimeagoModule
+  ]
+})
+export class SharedModule { }
+3. use timeago with pipe
+   <div>
+	  <strong>Last Active:</strong>
+	  <p>{{member.lastActive | timeago}}</p>
+   </div>
+   
+Implement caching:
+
+Store the data in Map() using key Object.values(userParams).join('-')
+and use the same key to get the data from cache
+
+1. declare a map: memberCache = new Map();
+2. Get the response from cache
+	let response = this.memberCache.get(Object.values(userParams).join('-'));
+    if(response){
+      return of(response);
+    }
+3. Save the response in the Map
+
+	this.getPaginatedResult<Member[]>(this.baseUrl + 'users', params).pipe(map(
+      response=>{
+        this.memberCache.set(Object.values(userParams).join('-'),response);
+        return response;
+      }
+    ));
+//Here is the full code
+getMembers(userParams: UserParams){
+
+    let response = this.memberCache.get(Object.values(userParams).join('-'));
+    if(response){
+      return of(response);
+    }
+    
+    let params = this.getPaginationHeader(userParams.pageNumber,userParams.pageSize);
+
+    params = params.append('minAge',userParams.minAge);
+    params = params.append('maxAge',userParams.maxAge);
+    params = params.append('gender',userParams.gender);
+    params = params.append('orderBy',userParams.orderBy);
+
+    return this.getPaginatedResult<Member[]>(this.baseUrl + 'users', params).pipe(map(
+      response=>{
+        this.memberCache.set(Object.values(userParams).join('-'),response);
+        return response;
+      }
+    ));
+}
+
+  
+	
