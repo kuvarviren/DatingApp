@@ -36,9 +36,10 @@ namespace API.Data
             //    .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
             //    .AsNoTracking(); //this disabled EF tracking as we are just going to read rhe entities
 
+            //For filtering use where cluses
             var query = _context.Users.AsQueryable();
             query = query.Where(u => u.UserName != userParams.CurrentUsername);//filter current user
-            query = query.Where(u => userParams.Gender == userParams.Gender); //filter gender
+            query = query.Where(u => u.Gender == userParams.Gender); //filter gender
 
             var minDob = DateTime.Today.AddYears(-userParams.MaxAge - 1);
             var maxDob = DateTime.Today.AddYears(-userParams.MinAge);

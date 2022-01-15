@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Predicate } from '@angular/core';
 import { of } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
@@ -78,7 +78,14 @@ export class MembersService {
       })
     );
   }
-
+  addLike(username){
+    return this.http.post(this.baseUrl + 'likes/'+username,{});
+  }
+  getLikes(predicate:string,pageNumber,pageSize){
+    var params = this.getPaginationHeader(pageNumber,pageSize);
+    params = params.append('predicate',predicate);
+    return this.getPaginatedResult<Partial<Member[]>>(this.baseUrl + 'likes/',params);
+  }
   setMainPhoto(photoId:number){
     //Since this is a put request,so need to send an empty object
     return this.http.put(this.baseUrl + 'users/set-main-photo/'+ photoId, {}); 
